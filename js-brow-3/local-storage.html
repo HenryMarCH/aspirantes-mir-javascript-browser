@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Local Storage</title>
+</head>
+
+<body>
+    <form>
+        <label for="name">Ingresa tu nombre</label>
+        <input type="text" id="name" name="name" placeholder="Ingresa tu nombre">
+        <label for="email">Ingresa tu email</label>
+        <input type="email" id="email" name="email" placeholder="Ingresa tu email">
+        <button type="submit">Guardar</button>
+    </form>
+    <section>
+        <p id="nameContent"></p>
+        <p id="emailContent"></p>
+        <button id="Delete">Eliminar datos</button>
+    </section>
+    <script>
+        // Obtener elementos del DOM
+        const form = document.querySelector('form');
+        const inputName = document.querySelector('#name');
+        const section = document.querySelector('section');
+        const inputEmail = document.querySelector('#email');
+        const nameContent = document.getElementById('nameContent');
+        const emailContent = document.getElementById('emailContent');
+        const deleteButton = document.getElementById('Delete');
+
+        // Manejar el evento de enviar el formulario
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            var name = inputName.value;
+            var email = inputEmail.value;
+
+            var info = {
+                name: name,
+                email: email
+            };
+            var userInfo = JSON.stringify(info);
+            if (name.trim() === '' || email.trim() === '') {
+                alert('Todos los campos son obligatorios');
+            } else {
+                localStorage.setItem('name', inputName.value);
+                localStorage.setItem('email', inputEmail.value);
+                localStorage.setItem('userInfo', userInfo);
+                nameContent.textContent = 'Nombre :' + name;
+                emailContent.textContent = 'Email :' + email;
+                deleteButton.disabled = false;
+                inputName.value = '';
+                inputEmail.value = '';
+
+                alert('El objeto se ha guardado en el local storage');
+            }
+        });
+
+        // Función para mostrar el nombre guardado en localStorage
+        function showName() {
+            var name = localStorage.getItem('name');
+
+            if (name) {
+                nameContent.textContent = 'Nombre: ' + name;
+            } else {
+                nameContent.textContent = 'No hay datos disponibles';
+                deleteButton.disabled = true;
+            }
+
+        }
+
+        // Función para borrar el nombre guardado en localStorage
+        function deleteName() {
+            localStorage.removeItem('name');
+            localStorage.removeItem('email');
+            location.reload();
+        }
+        deleteButton.addEventListener('click', function () {
+            deleteName();
+        })
+
+        // Mostrar el nombre guardado al cargar la página
+        function showLocalStorage() {
+            var localName = localStorage.getItem('name');
+            var localEmail = localStorage.getItem('email');
+            if (localName) {
+                nameContent.textContent = 'Nombre: ' + localName;
+            } else {
+                nameContent.textContent = "No hay datos disponibles";
+            } if (localEmail) {
+                emailContent.textContent = 'Email: ' + localEmail;
+            } else {
+                emailContent.textContent = "No hay datos disponibles";
+            }
+        }
+        document.addEventListener('DOMContentLoaded', showLocalStorage);
+    </script>
+</body>
+
+</html>
